@@ -12,6 +12,9 @@ on:
     paths:
       - "kustomizations/**"
 
+permissions:
+  contents: write
+
 jobs:
   ci:
     runs-on: ubuntu-latest
