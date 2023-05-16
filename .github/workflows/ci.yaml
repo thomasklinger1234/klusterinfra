@@ -40,6 +40,7 @@ jobs:
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           changelog_increment_filename: body.md
+          no_raise: "3,16,21"
       - name: Release
         uses: softprops/action-gh-release@v1
         if: github.ref == 'refs/heads/main'
