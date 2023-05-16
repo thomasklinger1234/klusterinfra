@@ -6,4 +6,4 @@ resources:
 - ../../base
 
 namespace: default
-nameSuffix: -production
+nameSuffix: -staging
