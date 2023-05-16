@@ -6,8 +6,12 @@ on:
   push:
     branches: [ "main" ]
     tags: [ 'v*.*.*' ]
+    paths:
+      - "template/**"
   pull_request:
     branches: [ "main" ]
+    paths:
+      - "template/**"
 
 env:
   REGISTRY: ghcr.io
@@ -66,6 +70,7 @@ jobs:
             type=semver,pattern={{major}}
             type=ref,event=branch
             type=ref,event=pr
+            type=ref,event=push
             type=sha
 
       # Build and push Docker image with Buildx (don't push on PR)
