@@ -1,0 +1,43 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: root-production
+  namespace: argo-cd
+  labels:
+    app.kubernetes.io/managed-by: argocd-applicationset
+    app.kubernetes.io/part-of: argocd-applicationset
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/otto-ec/shoen_devtools.git
+      revision: HEAD
+      directories:
+      - path: kustomizations/*
+  template:
+    metadata:
+      name: "{{ path[0] }}"
+      namespace: argo-cd
+      labels:
+        app.kubernetes.io/managed-by: argocd-applicationset
+        app.kubernetes.io/part-of: argocd-applicationset
+      finalizers:
+      - resources-finalizer.argocd.argoproj.io
+      annotations:
+        notifications.argoproj.io/subscribe.on-sync-failed.teams: default
+        notifications.argoproj.io/subscribe.on-health-degraded.teams: default
+    spec:
+      project: default
+      source:
+        repoURL: "https://github.com/thomasklinger1234/klusterinfra"
+        targetRevision: HEAD
+        path: "{{ path }}/overlays/production"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ path.basename }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: true
+
