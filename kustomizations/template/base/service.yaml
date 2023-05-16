@@ -6,8 +6,8 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: cartservice
+    app: template
   ports:
-  - name: grpc
-    port: 7070
-    targetPort: 7070
+  - name: http
+    port: 8080
+    targetPort: 8080
