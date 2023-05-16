@@ -1,3 +1,10 @@
+## v0.1.2 (2023-05-16)
+
+### Fix
+
+- add write permissions to commit
+- ignore cz exit codes
+
 ## v0.1.1 (2023-05-16)
 
 ### Fix
