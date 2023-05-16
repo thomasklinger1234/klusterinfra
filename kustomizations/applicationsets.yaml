@@ -3,21 +3,29 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: root-production
-  namespace: argo-cd
   labels:
     app.kubernetes.io/managed-by: argocd-applicationset
     app.kubernetes.io/part-of: argocd-applicationset
 spec:
   generators:
-  - git:
-      repoURL: https://github.com/otto-ec/shoen_devtools.git
-      revision: HEAD
-      directories:
-      - path: kustomizations/*
+  - matrix: 
+      generators:
+        - list:
+            elements:
+            - clusterAddress: https://kubernetes.default.svc
+              clusterNamespace: default
+              stageName: production
+            - clusterAddress: https://kubernetes.default.svc
+              clusterNamespace: default
+              stageName: staging
+        - git:
+            repoURL: https://github.com/thomasklinger1234/klusterinfra.git
+            revision: HEAD
+            directories:
+            - path: kustomizations/*
   template:
     metadata:
-      name: "{{ path[0] }}"
-      namespace: argo-cd
+      name: "kustomizations-{{ path.basename }}-{{ stageName }}"
       labels:
         app.kubernetes.io/managed-by: argocd-applicationset
         app.kubernetes.io/part-of: argocd-applicationset
@@ -31,10 +39,10 @@ spec:
       source:
         repoURL: "https://github.com/thomasklinger1234/klusterinfra"
         targetRevision: HEAD
-        path: "{{ path }}/overlays/production"
+        path: "{{ path }}/overlays/{{ stageName }}"
       destination:
-        server: https://kubernetes.default.svc
-        namespace: '{{ path.basename }}'
+        server: "{{ clusterAddress }}"
+        namespace: '{{ clusterNamespace }}'
       syncPolicy:
         automated:
           prune: true

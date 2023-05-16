@@ -7,3 +7,6 @@ resources:
 
 components:
 - ../../variants/default
+
+namespace: default
+nameSuffix: -production
